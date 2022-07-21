@@ -1,0 +1,16 @@
+Welcome to the Labyrinth!
+=======================================================
+The program will draw mazes using DFS. It can both
+create new random mazes or solve existing ones.
+User has to choose how to use this program from the
+menu and follow the instructions.
+
+
+The program has the following different playing modes:
+-------------------------------------------------------
+1.	The computer creates a random maze. The width and
+    height are set to 11.
+
+2.	Project description.
+
+3.	Quit the game.
