@@ -12,10 +12,6 @@ int main()
 
     delete labyrint;
     labyrint = nullptr;
-    //size_t width = 11;
-    //size_t height = 11;
-    //Labyrint* labyrint= new Labyrint(width, height);
-    //labyrint->initGenerator();
 
     return 0;
 }

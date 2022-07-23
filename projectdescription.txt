@@ -1,0 +1,17 @@
+Det finns många olika algoritmer för att generera labyrinter.
+I detta projekt kommer du tillämpa depth-first search (DFS)
+för ändamålet.
+
+DFS nyttjar att vi kan se en labyrint som en trädstruktur
+där vi börjar på en rotnod som förgrenar sig utåt tills
+att vi når de yttersta noderna som kallas för löv.
+I grunden är nämligen DFS en algoritm som används
+just för att söka i träd. Krydda den med lite slump,
+låt den genomsöka alla noder och vipps så fungerar
+den alldeles utmärkt för att generera labyrinter
+också. Lite som en ambitiös men fullständigt mållös
+spårhund. Intressant nog kan vi även använda DFS för
+att lösa labyrinter. Att lösa en labyrint är samma
+sak som att söka efter en specifik nod i ett träd
+med tillägget att vi även sparar vägen vi går för
+att nå den noden.

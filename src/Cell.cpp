@@ -1,4 +1,6 @@
 #include "Cell.h"
+#include <iostream>
+
 
 Cell::Cell()
     : m_x(0), m_y(0), m_visited(false), m_type(Type::SPACE), m_exteriorWall(false), m_innerWall(false)
@@ -6,9 +8,10 @@ Cell::Cell()
 
 }
 
+// Destructor
 Cell::~Cell()
 {
-    //dtor
+    std::cout << "Inside destructor" << std::endl;
 }
 
 char Cell::getType()
@@ -54,7 +57,6 @@ void Cell::setVisited(bool visited)
 {
     m_visited = visited;
 }
-
 
 
 

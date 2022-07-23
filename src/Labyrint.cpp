@@ -9,21 +9,18 @@
 const size_t WIDTH = 11;
 const size_t HEIGHT = 11;
 
-Labyrint::Labyrint(size_t width, size_t height)
-    : m_width(width), m_height(height), m_neighbors(4, false)
-{
-    std::cout << width << height << std::endl;
-}
-
 Labyrint::Labyrint()
-    : m_width(WIDTH), m_height(HEIGHT)
-{
+    : m_width( WIDTH ), m_height( HEIGHT )
+{ }
 
-}
+Labyrint::Labyrint(size_t width, size_t height)
+    : m_width(width), m_height(height)
+{ }
 
+// Destructor
 Labyrint::~Labyrint()
 {
-    //dtor
+    std::cout << "Inside destructor" << std::endl;
 }
 
 void Labyrint::run()
@@ -39,13 +36,13 @@ void Labyrint::run()
             //skapar en ny labyrint
             case '1':
             {
-                initGenerator();
+                generateMaze();
                 break;
             }
             //visar projekt info
             case '2':
             {
-                projectInfo();
+                project();
                 break;
             }
             //avslutar programmet
@@ -59,9 +56,7 @@ void Labyrint::run()
                 break;
         }
 
-    }
-
-    // ask if user wants to keep running program
+        // ask if user wants to keep running program
 		std::string again;
 		std::cin.clear();
 		std::cout << "\nDo you want to run the program again? (y/n) \n=> ";
@@ -103,8 +98,50 @@ void Labyrint::run()
 			exit( 0 );
 		}
 
-   //labyrint->initGenerator();
+    }
 }
+
+void Labyrint::generateMaze()
+{
+    m_width = WIDTH;
+    m_height = HEIGHT;
+    m_cells.resize( m_height, std::vector<Cell*>( m_width ) );
+
+    initGenerator();
+    resetMaze();
+}
+
+void Labyrint::resetMaze()
+{
+    m_width = 0;
+    m_height = 0;
+
+    deletePointers();
+    m_cells.resize( m_height, std::vector<Cell*>( m_width ) );
+    clearStack();
+    std::fill( m_neighbors.begin(), m_neighbors.end(), false );
+}
+
+void Labyrint::deletePointers()
+{
+    for ( size_t row = 0; row < m_height; row++ )
+    {
+        for ( size_t col = 0; col < m_width; col++ )
+        {
+            delete m_cells[row][col]; // delete stored pointer
+        }
+    }
+}
+
+void Labyrint::clearStack()
+{
+    while ( m_pathStack.empty() == false )
+    {
+        m_pathStack.pop();
+    }
+}
+
+
 
 void Labyrint::initGenerator()
 {
@@ -128,7 +165,8 @@ void Labyrint::create()
             cell->m_y = row;
             rowVector.push_back(cell);
         }
-        m_cells.push_back(rowVector);
+
+        m_cells[ row ] = rowVector;
     }
 }
 
@@ -160,8 +198,6 @@ void Labyrint::updateGenerator()
     //sätter start samt slut cell
     m_cells[1][0]->m_type = Cell::Type::START;
     m_cells[m_height-2][m_width-1]->m_type = Cell::Type::END;
-
-
 }
 
 void Labyrint::draw()
@@ -311,10 +347,9 @@ bool Labyrint::unvisitedNeighbors(Cell* cell)
 Labyrint::Direction Labyrint::selectDirection()
 {
     std::vector<int> possibleDirections;
-    //printVector(m_neighbors);
-    for(int i = 0; i < m_neighbors.size(); i++)
+    for (size_t i = 0; i < m_neighbors.size(); i++)
     {
-        if(m_neighbors[i] == true)
+        if (m_neighbors[i] == true)
         {
             possibleDirections.push_back(i);
         }
@@ -327,7 +362,7 @@ Labyrint::Direction Labyrint::selectDirection()
 void Labyrint::printVector(std::vector <bool> const &a) {
    std::cout << "The vector elements are : ";
 
-   for(int i=0; i < a.size(); i++)
+   for (size_t i=0; i < a.size(); i++)
    {
     std::cout << std::boolalpha << a.at(i) << ' ';
    }
@@ -373,7 +408,17 @@ void Labyrint::info()
     std::cout << std::string(70, '=') << std::endl;
 
     std::cout << "\nPlease make a choice. Press 1, 2 or 3 and then enter: " << std::endl;
+}
 
+void Labyrint::project()
+{
+    std::cout << std::string(100, '\n') << std::endl;
+    std::cout << std::string(70, '=') << std::endl;
+
+    std::cout << projectInfo() << std::endl;
+    std::cout << std::string(70, '=') << std::endl;
+
+    std::cout << "\nPlease make a choice. Press 1, 2 or 3 and then enter: " << std::endl;
 
 }
 
@@ -394,10 +439,19 @@ std::string Labyrint::infoText()
     return infoText;
 }
 
-void Labyrint::projectInfo()
+std::string Labyrint::projectInfo()
 {
-    std::cout << "project info" << std::endl;
+    std::string projectText = "";
+    std::string line = "";
+    std::string fileName = "projectdescription.txt";
 
+    std::ifstream readIn;
+    readIn.open(fileName);
+
+    while(std::getline(readIn, line))
+    {
+        projectText += line + "\n";
+    }
+    readIn.close();
+    return projectText;
 }
-
-

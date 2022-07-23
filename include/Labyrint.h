@@ -19,6 +19,11 @@ class Labyrint
         Labyrint(size_t width, size_t height);
         Labyrint();
         virtual ~Labyrint();
+
+        void generateMaze();
+        void resetMaze();
+        void deletePointers();
+        void clearStack();
         void initGenerator();
         void create();
         void updateGenerator();
@@ -31,22 +36,20 @@ class Labyrint
         void run();
         char getChoice();
         void info();
+        void project();
         std::string infoText();
-        void projectInfo();
+        std::string projectInfo();
 
 
     //protected:
 
     private:
-        size_t m_startNode;;
-        size_t m_endNode;
-        size_t m_width;
-        size_t m_height;
+        size_t m_width { 0 };
+        size_t m_height { 0 };
+
         std::vector<std::vector<Cell*>> m_cells;
         std::stack<Cell*> m_pathStack;
-        std::vector<bool> m_neighbors;
-
+        std::vector< bool > m_neighbors { false, false, false, false };
 };
 
 #endif // LABYRINT_H
-
