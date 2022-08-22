@@ -38,6 +38,7 @@
 		<Unit filename="include/Labyrint.h" />
 		<Unit filename="info.txt" />
 		<Unit filename="main.cpp" />
+		<Unit filename="projectdescription.txt" />
 		<Unit filename="src/Cell.cpp" />
 		<Unit filename="src/Labyrint.cpp" />
 		<Extensions />

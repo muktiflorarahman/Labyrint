@@ -1,3 +1,10 @@
+/*
+Namn: Mukti Flora Rahman
+Kurs: Objektbaserad programmering i C++
+Program: Civilingenjör datateknik
+Betyg: E-C
+Datum: 2022-07-23
+*/
 #ifndef CELL_H
 #define CELL_H
 #include <cstddef>

@@ -1,3 +1,10 @@
+/*
+Namn: Mukti Flora Rahman
+Kurs: Objektbaserad programmering i C++
+Program: Civilingenjör datateknik
+Betyg: E-C
+Datum: 2022-07-23
+*/
 #include "Cell.h"
 #include <iostream>
 
@@ -13,6 +20,9 @@ Cell::~Cell()
 {
     std::cout << "Inside destructor" << std::endl;
 }
+
+//get-type funktion
+//switch sats för de olika typerna i labyrint, väggar
 
 char Cell::getType()
 {
@@ -41,18 +51,20 @@ char Cell::getType()
 
     }
 }
-
+//set funktion för att sätta variabeln m_type
 void Cell::setType(Cell::Type type)
 {
     m_type = type;
 }
 
-
+//funktion för att se vilka som har besökts
+//returnerar därför variabeln m_visited
 bool Cell::getVisited()
 {
     return m_visited;
 }
 
+//set funktionn för att sätta variabeln m_visited
 void Cell::setVisited(bool visited)
 {
     m_visited = visited;

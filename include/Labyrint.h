@@ -1,3 +1,11 @@
+/*
+Namn: Mukti Flora Rahman
+Kurs: Objektbaserad programmering i C++
+Program: Civilingenjör datateknik
+Betyg: E-C
+Datum: 2022-07-23
+*/
+
 #ifndef LABYRINT_H
 #define LABYRINT_H
 #include "Cell.h"
@@ -20,8 +28,8 @@ class Labyrint
         Labyrint();
         virtual ~Labyrint();
 
-        void generateMaze();
-        void resetMaze();
+        void generateLabyrint();
+        void resetLabyrint();
         void deletePointers();
         void clearStack();
         void initGenerator();
