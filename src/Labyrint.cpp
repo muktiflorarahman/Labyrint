@@ -73,11 +73,11 @@ void Labyrint::run()
 
 		std::getline( std::cin, again );
 		char agn = again[ 0 ];
-		agn = tolower( agn );
+		agn = tolower(agn);
 
 		bool validReply = false;
 
-		if ( ( agn == 'y' || agn == 'n' ) && again.length() == 1 )
+		if (( agn == 'y' || agn == 'n') && again.length() == 1 )
 		{
 			validReply = true;
 		}
@@ -137,15 +137,15 @@ void Labyrint::resetLabyrint()
 //funktionen som tar bort pointers
 void Labyrint::deletePointers()
 {
-    for ( size_t row = 0; row < m_height; row++ )
+    for( size_t row = 0; row < m_height; row++)
     {
-        for ( size_t col = 0; col < m_width; col++ )
+        for (size_t col = 0; col < m_width; col++)
         {
             delete m_cells[row][col]; // raderar lagrad pointer
         }
     }
 }
-
+//rensar stacken
 void Labyrint::clearStack()
 {
     while ( m_pathStack.empty() == false )
@@ -233,10 +233,13 @@ void Labyrint::draw()
         }
         std::cout << std::endl;
     }
+    //till för att visa hur labyrinten uppför sig i terminalen
     std::this_thread::sleep_for(std::chrono::milliseconds(10000));
 }
 
 //följer algoritmen DFS
+//håller koll på variabeln oldWall (väggen som ska rivas)
+//och neighbor, grannen som ska besökas
 void Labyrint::createPath()
 {
 // - Markera alla noder som obesökta.
@@ -289,12 +292,19 @@ void Labyrint::createPath()
            //öppna kopplingen mellan N och G
            switch(direction)
            {
+                //1 steg uppåt oldwall ska rivas
+                //2 steg uppåt är grannen som vi ska gå till
+                //här sker förändringen vertikalt
+                //med avseende på y i labyrinten
                 case Direction::UP: {
                     oldWall = m_cells[current->m_y - 1][current->m_x];
                     neighbor = m_cells[current->m_y - 2][current->m_x];
                     break;
                 }
-
+                //1 steg åt höger - oldwall ska rivas
+                //2 steg åt höger är grannen vi ska gå till
+                //här sker förändringen horisontellt, alltså med
+                //avseende på x i labyrinten
                 case Direction::RIGHT: {
                     oldWall = m_cells[current->m_y][current->m_x + 1];
                     neighbor = m_cells[current->m_y][current->m_x + 2];
@@ -303,18 +313,22 @@ void Labyrint::createPath()
 
                 //1 steg nedåt-oldwall som ska rivas
                 //2 steg nedåt är grannen som vi ska gå till
+                //här sker förändringen vertikalt
+                //med avseende på y i labyrinten
                 case Direction::DOWN: {
                     oldWall = m_cells[current->m_y + 1][current->m_x];
                     neighbor = m_cells[current->m_y + 2][current->m_x];
                     break;
                 }
-
+                //1 steg åt vänster - oldWall ska rivas
+                //2 steg åt vänster är grannen vi ska gå till
+                //här sker förändringen horisontellt
+                //med avseende på x i labyrinten
                 case Direction::LEFT: {
                     oldWall = m_cells[current->m_y][current->m_x - 1];
                     neighbor = m_cells[current->m_y][current->m_x - 2];
                     break;
                 }
-
                 default:
                     break;
            }
@@ -334,7 +348,6 @@ void Labyrint::createPath()
 }
 
 //fyller vektorn med false för obesökta grannar
-
 bool Labyrint::unvisitedNeighbors(Cell* cell)
 {
     std::fill(m_neighbors.begin(),m_neighbors.end(), false);
