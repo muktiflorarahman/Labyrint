@@ -28,7 +28,6 @@ Labyrint::Labyrint(size_t width, size_t height)
 // Destructor
 Labyrint::~Labyrint()
 {
-    std::cout << "Inside destructor" << std::endl;
     deletePointers();
 }
 
@@ -58,8 +57,9 @@ void Labyrint::run()
             //avslutar programmet
             case '3':
             {
-                deletePointers();
-                exit(0);
+                //deletePointers();
+                //exit(0);
+                programIsRunning = false;
                 break;
             }
 
@@ -67,47 +67,50 @@ void Labyrint::run()
                 break;
         }
 
-        // frågar ifall användaren vill fortsätta köra programmet
-		std::string again;
-		std::cin.clear();
-		std::cout << "\nDo you want to run the program again? (y/n) \n=> ";
-		std::cout.flush();
+       if(programIsRunning==true)
+       {
+             // frågar ifall användaren vill fortsätta köra programmet
+            std::string again;
+            std::cin.clear();
+            std::cout << "\nDo you want to run the program again? (y/n) \n=> ";
+            std::cout.flush();
 
-		std::getline( std::cin, again );
-		char agn = again[ 0 ];
-		agn = tolower(agn);
+            std::getline( std::cin, again );
+            char agn = again[ 0 ];
+            agn = tolower(agn);
 
-		bool validReply = false;
+            bool validReply = false;
 
-		if (( agn == 'y' || agn == 'n') && again.length() == 1 )
-		{
-			validReply = true;
-		}
-        else
-		{
-			while ( !validReply )
-			{
-				std::cin.clear();
-				std::cout << "\nDo you want to run the program again? (y/n) \n=> ";
-				std::cout.flush();
+            if (( agn == 'y' || agn == 'n') && again.length() == 1 )
+            {
+                validReply = true;
+            }
+            else
+            {
+                while ( !validReply )
+                {
+                    std::cin.clear();
+                    std::cout << "\nDo you want to run the program again? (y/n) \n=> ";
+                    std::cout.flush();
 
-				std::getline( std::cin, again );
-				agn = again[ 0 ];
-				agn = tolower( agn );
+                    std::getline( std::cin, again );
+                    agn = again[ 0 ];
+                    agn = tolower( agn );
 
-				if ( ( agn == 'y' || agn == 'n' ) && again.length() == 1 )
-				{
-					validReply = true;
-				}
-			}
-		}
-		// användar vill avsluta programmet
-		if ( agn == 'n' )
-		{
-			programIsRunning = false;
-			exit( 0 );
-		}
+                    if ( ( agn == 'y' || agn == 'n' ) && again.length() == 1 )
+                    {
+                        validReply = true;
+                    }
+                }
+            }
+            // användar vill avsluta programmet
+            if ( agn == 'n' )
+            {
+                programIsRunning = false;
+                //exit( 0 );
+            }
 
+       }
     }
 }
 
@@ -137,7 +140,11 @@ void Labyrint::resetLabyrint()
 //funktionen som tar bort pointers
 void Labyrint::deletePointers()
 {
-    std::cout << "inne i deletePointers" << std::endl;
+    if(m_cells.empty())
+    {
+        return;
+    }
+
     for( size_t row = 0; row < m_height; row++)
     {
         for (size_t col = 0; col < m_width; col++)
