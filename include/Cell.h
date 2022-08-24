@@ -2,7 +2,7 @@
 Namn: Mukti Flora Rahman
 Kurs: Objektbaserad programmering i C++
 Program: Civilingenjör datateknik
-Betyg: E-C
+Betyg: E
 Datum: 2022-07-23
 */
 #ifndef CELL_H
@@ -14,6 +14,7 @@ class Labyrint;
 class Cell
 {
     friend class Labyrint;
+
 public:
     enum class Type
     {
@@ -25,14 +26,6 @@ public:
         END = 'E'
     };
 
-    Cell();
-    virtual ~Cell();
-    char getType();
-    void setType(Cell::Type);
-    bool getVisited();
-    void setVisited(bool);
-
-
 
 private:
     //kolumn variabel x, rad variabel y
@@ -42,6 +35,16 @@ private:
     Type m_type;
     bool m_exteriorWall;
     bool m_innerWall;
+
+
+
+private:
+    Cell();
+    virtual ~Cell();
+    char getType();
+    void setType(Cell::Type);
+    bool getVisited();
+    void setVisited(bool);
 };
 
 #endif // CELL_H

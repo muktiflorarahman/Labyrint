@@ -2,7 +2,7 @@
 Namn: Mukti Flora Rahman
 Kurs: Objektbaserad programmering i C++
 Program: Civilingenjör datateknik
-Betyg: E-C
+Betyg: E
 Datum: 2022-07-23
 */
 
@@ -29,6 +29,7 @@ Labyrint::Labyrint(size_t width, size_t height)
 Labyrint::~Labyrint()
 {
     std::cout << "Inside destructor" << std::endl;
+    deletePointers();
 }
 
 //funktion för att köra igång programmet
@@ -57,6 +58,7 @@ void Labyrint::run()
             //avslutar programmet
             case '3':
             {
+                deletePointers();
                 exit(0);
                 break;
             }
@@ -130,27 +132,18 @@ void Labyrint::resetLabyrint()
 
     deletePointers();
     m_cells.resize(m_height, std::vector<Cell*>( m_width )); // sätta storlek på m_cells
-    clearStack();
-    std::fill( m_neighbors.begin(), m_neighbors.end(), false );
 }
 
 //funktionen som tar bort pointers
 void Labyrint::deletePointers()
 {
+    std::cout << "inne i deletePointers" << std::endl;
     for( size_t row = 0; row < m_height; row++)
     {
         for (size_t col = 0; col < m_width; col++)
         {
             delete m_cells[row][col]; // raderar lagrad pointer
         }
-    }
-}
-//rensar stacken
-void Labyrint::clearStack()
-{
-    while ( m_pathStack.empty() == false )
-    {
-        m_pathStack.pop();
     }
 }
 
@@ -234,7 +227,7 @@ void Labyrint::draw()
         std::cout << std::endl;
     }
     //till för att visa hur labyrinten uppför sig i terminalen
-    std::this_thread::sleep_for(std::chrono::milliseconds(10000));
+    std::this_thread::sleep_for(std::chrono::milliseconds(250));
 }
 
 //följer algoritmen DFS
@@ -260,6 +253,9 @@ void Labyrint::createPath()
 
     //markera alla noder som obesökta - gjort i Cell konstruktorn
     //Välj en startnod och låt den vara nuvarande nod N
+    std::stack<Cell*> pathStack; //bör vara i respektiv funktion
+
+
     Cell* neighbor = nullptr;
     Cell* oldWall = nullptr;
 
@@ -270,24 +266,27 @@ void Labyrint::createPath()
     current->m_visited = true;
 
     //lägg till nod N till en stack S
-    //lägger till current i stacken m_pathStack
-    m_pathStack.push(current);
+    //lägger till current i stacken pathStack
+    pathStack.push(current);
 
     //så länge som stack S inte är tom
-    while(m_pathStack.empty() == false)
+    while(pathStack.empty() == false)
     {
         //hämta en nod från stacken S och låt den vara nod N
-        current = m_pathStack.top();
+        current = pathStack.top();
         //tar bort cellen från stacken
-        m_pathStack.pop();
+        pathStack.pop();
+
+        std::vector<bool> neighbors = unvisitedNeighbors(current);
+        bool hasNeighbors = std::find(neighbors.begin(), neighbors.end(), true) != neighbors.end();
 
         //om nod N har obesökta grannar
-        if(unvisitedNeighbors(current))
+        if(hasNeighbors)
         {
-           //std::cout << "inne i if-unvisitedNeighbors" << std::boolalpha << m_neighbors[0] << m_neighbors[1] << m_neighbors[2] << m_neighbors[3] << std::endl;
+           //std::cout << "inne i if-unvisitedNeighbors" << std::boolalpha << neighbors[0] << neighbors[1] << neighbors[2] << neighbors[3] << std::endl;
            //lägg till nod N i stack S
-           m_pathStack.push(current);
-           Direction direction = selectDirection();
+           pathStack.push(current);
+           Direction direction = selectDirection(neighbors);
 
            //öppna kopplingen mellan N och G
            switch(direction)
@@ -341,30 +340,29 @@ void Labyrint::createPath()
            oldWall->setVisited(true);
            // - Lägg till G till S.
            //lägger till den besökta grannen till stacken
-           m_pathStack.push(neighbor);
+           pathStack.push(neighbor);
            draw();
         }
     }
 }
 
 //fyller vektorn med false för obesökta grannar
-bool Labyrint::unvisitedNeighbors(Cell* cell)
+std::vector<bool> Labyrint::unvisitedNeighbors(Cell* cell)
 {
-    std::fill(m_neighbors.begin(),m_neighbors.end(), false);
+    std::vector< bool > neighbors { false, false, false, false };
+
     size_t x = cell->m_x;
     size_t y = cell->m_y;
 
-   // std::cout << "size of m_neighbors vec: " << m_neighbors.size() << std::endl;
+   // std::cout << "size of neighbors vec: " << neighbors.size() << std::endl;
 
-    bool visited = false;
 
     //söker celler uppåt, rör sig i y-axeln
     //om cellen ovanför inte är en yttervägg
     //då kollar vi om cellen 2 steg ovanför är obesökt
     if(m_cells[y-1][x]->m_exteriorWall == false && m_cells[y-2][x]->m_visited == false)
     {
-        m_neighbors[0] = true;
-        visited = true;
+        neighbors[0] = true;
     }
 
     //söker celler åt höger
@@ -373,8 +371,7 @@ bool Labyrint::unvisitedNeighbors(Cell* cell)
     //då kollar vi om cellen 2 steg åt höger är obesökt
     if(m_cells[y][x+1]->m_exteriorWall == false && m_cells[y][x+2]->m_visited == false)
     {
-        m_neighbors[1] = true;
-        visited = true;
+        neighbors[1] = true;
     }
 
     //söker celler nedåt
@@ -383,8 +380,7 @@ bool Labyrint::unvisitedNeighbors(Cell* cell)
     //då kollar vi om cellen 2 sted nedåt är obesökt
     if(m_cells[y+1][x]->m_exteriorWall == false && m_cells[y+2][x]->m_visited == false)
     {
-        m_neighbors[2] = true;
-        visited = true;
+        neighbors[2] = true;
     }
 
     //söker celler åt vänster, -1 är vänster på x-axeln
@@ -393,10 +389,10 @@ bool Labyrint::unvisitedNeighbors(Cell* cell)
     //då kollar vi om cellen 2 steg åt vänster är obesökt
     if(m_cells[y][x-1]->m_exteriorWall == false && m_cells[y][x-2]->m_visited == false)
     {
-        m_neighbors[3] = true;
-        visited = true;
+        neighbors[3] = true;
     }
-    return visited;
+
+    return neighbors;
 }
 
 //funktion för att välja riktning
@@ -404,12 +400,12 @@ bool Labyrint::unvisitedNeighbors(Cell* cell)
 //loopar igenom vektorn
 //if sats för att se om pos i vec. m_neigbors är true
 //då läggs den pos i vec possibleDirections
-Labyrint::Direction Labyrint::selectDirection()
+Labyrint::Direction Labyrint::selectDirection(std::vector<bool> & vec)
 {
     std::vector<int> possibleDirections;
-    for (size_t i = 0; i < m_neighbors.size(); i++)
+    for (size_t i = 0; i < vec.size(); i++)
     {
-        if (m_neighbors[i] == true)
+        if (vec[i] == true)
         {
             possibleDirections.push_back(i);
         }
